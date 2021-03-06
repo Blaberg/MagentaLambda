@@ -6,6 +6,10 @@ import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.client.builder.AwsClientBuilder;
 import com.amazonaws.services.apigatewaymanagementapi.AmazonApiGatewayManagementApi;
 import com.amazonaws.services.apigatewaymanagementapi.AmazonApiGatewayManagementApiClientBuilder;
+import com.amazonaws.services.kms.AWSKMS;
+import com.amazonaws.services.kms.AWSKMSClientBuilder;
+import com.amazonaws.services.kms.model.DecryptRequest;
+import com.amazonaws.util.Base64;
 import redis.clients.jedis.Jedis;
 import software.amazon.awssdk.auth.credentials.EnvironmentVariableCredentialsProvider;
 import software.amazon.awssdk.http.urlconnection.UrlConnectionHttpClient;
@@ -13,6 +17,10 @@ import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
 
 import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.charset.Charset;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * The module containing all dependencies required by the {@link Broadcast}.
@@ -20,6 +28,8 @@ import java.io.IOException;
 public class DependencyFactory {
 
     private DependencyFactory() {}
+
+
 
     /**
      * @return an instance of S3Client
@@ -42,8 +52,7 @@ public class DependencyFactory {
     }
 
     public static AmazonApiGatewayManagementApi api() {
-        BasicAWSCredentials awsCreds = new BasicAWSCredentials("AKIA23FTGTHROLMSI6RP", "ghPHt1RIS/q+x//K" +
-                "/lZtS5QvH4iAfuRMKJJO/F+z");
+        BasicAWSCredentials awsCreds = new BasicAWSCredentials(System.getenv("AccessID"), System.getenv("AccessKey"));
         return AmazonApiGatewayManagementApiClientBuilder
                 .standard()
                 .withCredentials(new AWSStaticCredentialsProvider(awsCreds)).withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration("uyssdmmwll" +
@@ -51,4 +60,6 @@ public class DependencyFactory {
                         ".eu-north-1.amazonaws.com/test", "eu-north-1"))
                 .build();
     }
+
+
 }

@@ -1,3 +1,4 @@
 /target
 .idea
 .aws-sam
+secrets.env
