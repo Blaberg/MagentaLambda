@@ -41,9 +41,4 @@ Resources:
         - AWSLambdaVPCAccessExecutionRole
         - CloudWatchLogsFullAccess
         - AWSLambdaFullAccess
-  MyWebSocketApi:
-    Type: AWS::ApiGatewayV2::Api
-    Properties:
-      Name: MagentaServerAPI
-      ProtocolType: WEBSOCKET
-      RouteSelectionExpression: "$request.body.action"
+  
