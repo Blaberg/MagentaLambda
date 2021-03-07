@@ -11,6 +11,7 @@ phases:
     commands:
       - echo Build started on `date`
       - mvn install
+      - aws cloudformation package --template-file template.yaml --s3-bucket magenta-server --output-template-file outputTemplate.yaml
   post_build:
     commands:
       - echo Build completed on `date`
@@ -18,3 +19,4 @@ artifacts:
   files:
     - target/MagentaLambda-1.0-SNAPSHOT.jar
     - template.yaml
+    - outputTemplate.yaml
