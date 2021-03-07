@@ -18,5 +18,4 @@ phases:
 artifacts:
   files:
     - target/MagentaLambda-1.0-SNAPSHOT.jar
-    - template.yaml
     - outputTemplate.yaml
