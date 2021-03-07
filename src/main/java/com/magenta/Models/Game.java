@@ -9,6 +9,6 @@ import java.util.Set;
 @Data
 @AllArgsConstructor
 public class Game {
-    Set<String> sessions;
+    Set<String> connections;
     Map<String,String> players;
 }

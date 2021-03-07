@@ -32,37 +32,57 @@ public class JoinGame implements RequestHandler<APIGatewayV2WebSocketEvent, Obje
 
     @Override
     public Object handleRequest(APIGatewayV2WebSocketEvent event, Context context) {
-        AwsProxyResponse response = new AwsProxyResponse();
-        response.setStatusCode(200);
+        AwsProxyResponse awsResponse = new AwsProxyResponse();
+        awsResponse.setStatusCode(200);
         Map<String, String> headers = new HashMap<>();
         headers.put("Content-Type", "application/json");
-        response.setHeaders(headers);
+        awsResponse.setHeaders(headers);
 
         try {
             Message message = objectMapper.readValue(event.getBody(), Message.class);
-            Game game = joinGame(message.getDestination(), message.getSender(),
-                    event.getRequestContext().getConnectionId());
+            String connectionID = event.getRequestContext().getConnectionId();
+            joinGame(message.getDestination(), message.getSender(),
+                    connectionID);
+
+            Message response = new Message();
+            response.setType("Joined Game");
+            response.setSubject(objectMapper.writeValueAsString(jedis.hgetAll(message.getDestination())));
 
             PostToConnectionRequest post = new PostToConnectionRequest();
-            post.setData(ByteBuffer.wrap(objectMapper.writeValueAsString(game).getBytes()));
-            post.setConnectionId(event.getRequestContext().getConnectionId());
+            post.setData(ByteBuffer.wrap(objectMapper.writeValueAsString(message).getBytes()));
+            post.setConnectionId(connectionID);
             api.postToConnection(post);
+            broadcast(message.getDestination(), message.getSender(), connectionID);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
-            response.setStatusCode(400);
-            return response;
+            awsResponse.setStatusCode(400);
+            return awsResponse;
         }
 
-        return response;
+        return awsResponse;
     }
 
-    public Game joinGame(String pin, String player, String connectionID) {
+    public void joinGame(String pin, String player, String connectionID) {
         jedis.sadd(pin, connectionID);
         if (!player.equals("Scoreboard")) {
             jedis.hset("points:" + pin, player, "0");
         }
-        jedis.hset("connections",connectionID,pin+":"+player);
-
-        return new Game(jedis.smembers(pin), jedis.hgetAll("points#" + pin));
+        jedis.hset("connections", connectionID, pin + ":" + player);
     }
+
+    public void broadcast(String pin, String player, String connectionID) throws JsonProcessingException {
+        PostToConnectionRequest post = new PostToConnectionRequest();
+        Message message = new Message();
+        message.setType("Player Joined");
+        message.setSubject("0");
+        message.setSender(player);
+        post.setData(ByteBuffer.wrap(objectMapper.writeValueAsString(message).getBytes()));
+        for (String connection : jedis.smembers(pin)) {
+            if (!connection.equals(connectionID)) {
+                post.setConnectionId(connection);
+                api.postToConnection(post);
+            }
+        }
+    }
+
 }
