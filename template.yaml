@@ -31,30 +31,29 @@ Resources:
         - AmazonAPIGatewayInvokeFullAccess
         - AWSLambdaBasicExecutionRole
         - AWSLambdaVPCAccessExecutionRole
-  MagentaServerAPI:
-    Type: AWS::ApiGatewayV2::Api
+  CreateGame:
+    Type: AWS::Serverless::Function
     Properties:
-      Name: MagentaServerAPI
-      StageName: production
-      ProtocolType: WEBSOCKET
-      RouteSelectionExpression: "$request.body.action"
-  JoinGameRoute:
-    Type: AWS::ApiGatewayV2::Route
+      Runtime: java8
+      Handler: com.magenta.Functions.CreateGame::handleRequest
+      Timeout: 300
+      MemorySize: 512
+      CodeUri: ./target/MagentaLambda-1.0-SNAPSHOT.jar
+      Policies:
+        - AmazonElastiCacheFullAccess
+        - AmazonAPIGatewayInvokeFullAccess
+        - AWSLambdaBasicExecutionRole
+        - AWSLambdaVPCAccessExecutionRole
+  OnDisconnect:
+    Type: AWS::Serverless::Function
     Properties:
-      ApiId: !Ref MagentaServerAPI
-      RouteKey: joingame
-      AuthorizationType: NONE
-      OperationName: JoinGameRoute
-      Target: !Join
-        - '/'
-        - - 'integrations'
-          - !Ref JoinGameInteg
-  JoinGameInteg:
-    Type: AWS::ApiGatewayV2::Integration
-    Properties:
-      ApiId: !Ref MagentaServerAPI
-      Description: Join Game Integration
-      IntegrationType: AWS_PROXY
-      IntegrationUri:
-        Fn::Sub:
-          arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${JoinGame.Arn}/invocations
+      Runtime: java8
+      Handler: com.magenta.Functions.JoinGame::handleRequest
+      Timeout: 300
+      MemorySize: 512
+      CodeUri: ./target/MagentaLambda-1.0-SNAPSHOT.jar
+      Policies:
+        - AmazonElastiCacheFullAccess
+        - AmazonAPIGatewayInvokeFullAccess
+        - AWSLambdaBasicExecutionRole
+        - AWSLambdaVPCAccessExecutionRole
