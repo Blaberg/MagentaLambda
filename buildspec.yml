@@ -1,11 +1,20 @@
 version: 0.2
+
 phases:
   install:
     runtime-versions:
       java: openjdk8
+  pre_build:
+    commands:
+      - echo Nothing to do in the pre_build phase...
   build:
     commands:
-      - sam package --template-file template.yaml --s3-bucket magenta-server --output-template-file packaged-template.yml
+      - echo Build started on `date`
+      - mvn install
+  post_build:
+    commands:
+      - echo Build completed on `date`
 artifacts:
   files:
-    - packaged-template.yaml
+    - target/MagentaLambda-1.0-SNAPSHOT.jar
+    - template.yaml
