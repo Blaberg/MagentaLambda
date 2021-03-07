@@ -19,3 +19,4 @@ artifacts:
   files:
     - target/MagentaLambda-1.0-SNAPSHOT.jar
     - outputTemplate.yaml
+    - template.yaml
