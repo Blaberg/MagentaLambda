@@ -6,10 +6,7 @@ import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.client.builder.AwsClientBuilder;
 import com.amazonaws.services.apigatewaymanagementapi.AmazonApiGatewayManagementApi;
 import com.amazonaws.services.apigatewaymanagementapi.AmazonApiGatewayManagementApiClientBuilder;
-import com.amazonaws.services.kms.AWSKMS;
-import com.amazonaws.services.kms.AWSKMSClientBuilder;
-import com.amazonaws.services.kms.model.DecryptRequest;
-import com.amazonaws.util.Base64;
+import com.magenta.Functions.Broadcast;
 import redis.clients.jedis.Jedis;
 import software.amazon.awssdk.auth.credentials.EnvironmentVariableCredentialsProvider;
 import software.amazon.awssdk.http.urlconnection.UrlConnectionHttpClient;
@@ -17,18 +14,14 @@ import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
 
 import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.nio.charset.Charset;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * The module containing all dependencies required by the {@link Broadcast}.
  */
 public class DependencyFactory {
 
-    private DependencyFactory() {}
-
+    private DependencyFactory() {
+    }
 
 
     /**
@@ -36,10 +29,10 @@ public class DependencyFactory {
      */
     public static S3Client s3Client() {
         return S3Client.builder()
-                       .credentialsProvider(EnvironmentVariableCredentialsProvider.create())
-                       .region(Region.EU_NORTH_1)
-                       .httpClientBuilder(UrlConnectionHttpClient.builder())
-                       .build();
+                .credentialsProvider(EnvironmentVariableCredentialsProvider.create())
+                .region(Region.EU_NORTH_1)
+                .httpClientBuilder(UrlConnectionHttpClient.builder())
+                .build();
     }
 
     public static Jedis jedis() throws IOException {
@@ -47,7 +40,7 @@ public class DependencyFactory {
         String configEndpoint = "meganta-redis.dngk3v.0001.eun1.cache.amazonaws.com";
         int clusterPort = 6379;
 
-        return new Jedis(configEndpoint,clusterPort);
+        return new Jedis(configEndpoint, clusterPort);
 
     }
 

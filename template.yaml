@@ -7,7 +7,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       Runtime: java8
-      Handler: com.magenta.Broadcast::handleRequest
+      Handler: com.magenta.Functions.Broadcast::handleRequest
       Timeout: 60
       MemorySize: 512
       CodeUri: ./target/MagentaLambda.jar
@@ -22,7 +22,7 @@ Resources:
     Properties:
       Description: v0.5
       Runtime: java8
-      Handler: com.magenta.OnOpen::handleRequest
+      Handler: com.magenta.Functions.OnOpen::handleRequest
       Timeout: 300
       MemorySize: 512
       CodeUri: ./target/MagentaLambda.jar

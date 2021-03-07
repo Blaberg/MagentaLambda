@@ -1,4 +1,4 @@
-package com.magenta;
+package com.magenta.Functions;
 
 
 import com.amazonaws.services.lambda.runtime.Context;
@@ -9,8 +9,8 @@ import com.amazonaws.services.lambda.runtime.events.APIGatewayV2WebSocketRespons
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.magenta.DependencyFactory;
 import lombok.SneakyThrows;
-import org.json.simple.JSONObject;
 import redis.clients.jedis.Jedis;
 
 import java.io.IOException;

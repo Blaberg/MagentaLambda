@@ -3,6 +3,7 @@ package com.magenta;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.amazonaws.services.lambda.runtime.events.APIGatewayV2WebSocketEvent;
+import com.magenta.Functions.Broadcast;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;

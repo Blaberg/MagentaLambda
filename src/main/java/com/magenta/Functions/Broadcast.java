@@ -1,20 +1,17 @@
-package com.magenta;
+package com.magenta.Functions;
 
-import com.amazonaws.auth.AWSStaticCredentialsProvider;
-import com.amazonaws.auth.BasicAWSCredentials;
-import com.amazonaws.client.builder.AwsClientBuilder;
 import com.amazonaws.serverless.proxy.internal.model.AwsProxyResponse;
 import com.amazonaws.services.apigatewaymanagementapi.AmazonApiGatewayManagementApi;
-import com.amazonaws.services.apigatewaymanagementapi.AmazonApiGatewayManagementApiClientBuilder;
 import com.amazonaws.services.apigatewaymanagementapi.model.PostToConnectionRequest;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayV2WebSocketEvent;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.magenta.DependencyFactory;
+import com.magenta.Models.Message;
 import redis.clients.jedis.Jedis;
 import software.amazon.awssdk.services.s3.S3Client;
-import com.amazonaws.services.lambda.runtime.LambdaLogger;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -33,8 +30,8 @@ public class Broadcast implements RequestHandler<APIGatewayV2WebSocketEvent, Obj
     private final Jedis jedis;
     private final S3Client s3Client;
     private final AmazonApiGatewayManagementApi api;
-    Gson gson = new GsonBuilder().setPrettyPrinting().create();
-    LambdaLogger logger;
+    ObjectMapper objectMapper = new ObjectMapper();
+
 
 
     public Broadcast() throws IOException {
@@ -50,20 +47,26 @@ public class Broadcast implements RequestHandler<APIGatewayV2WebSocketEvent, Obj
     @Override
     public Object handleRequest(final APIGatewayV2WebSocketEvent event, final Context context) {
         AwsProxyResponse response = new AwsProxyResponse();
-        LambdaLogger logger = context.getLogger();
         response.setStatusCode(200);
         Map<String, String> headers = new HashMap<>();
         headers.put("Content-Type", "application/json");
         response.setHeaders(headers);
+        try {
+            Message message = objectMapper.readValue(event.getBody(), Message.class);
+            broadcast(message.getDestination(), message.getSender(), event.getBody());
 
-        broadcast(jedis.smembers("Connections"), event.getRequestContext().getConnectionId(), event.getBody());
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            response.setStatusCode(400);
+        }
         return response;
     }
 
-    public void broadcast(Set<String> connections, String connectionID, String message) {
+    public void broadcast(String game, String connectionID, String message) {
 
         PostToConnectionRequest post = new PostToConnectionRequest();
         post.setData(ByteBuffer.wrap(message.getBytes()));
+        Set<String> connections = jedis.smembers(game);
 
         for (String connection : connections) {
             if (!connection.equals(connectionID)) {
