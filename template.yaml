@@ -26,3 +26,24 @@ Resources:
       Timeout: 300
       MemorySize: 512
       CodeUri: ./target/MagentaLambda.jar
+  JoinGame:
+    Type: AWS::Serverless::Function
+    Properties:
+      Runtime: java8
+      Handler: com.magenta.Functions.OnOpen::handleRequest
+      Timeout: 300
+      MemorySize: 512
+      CodeUri: ./target/MagentaLambda-1.0-SNAPSHOT.jar
+      Policies:
+        - AmazonElastiCacheFullAccess
+        - AmazonAPIGatewayInvokeFullAccess
+        - AWSLambdaBasicExecutionRole
+        - AWSLambdaVPCAccessExecutionRole
+        - CloudWatchLogsFullAccess
+        - AWSLambdaFullAccess
+  MyWebSocketApi:
+    Type: AWS::ApiGatewayV2::Api
+    Properties:
+      Name: MagentaServerAPI
+      ProtocolType: WEBSOCKET
+      RouteSelectionExpression: "$request.body.action"

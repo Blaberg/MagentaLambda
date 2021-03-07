@@ -1,12 +1,11 @@
-version: 0.1
+version: 0.2
 phases:
   install:
+    runtime-versions:
+      java: openjdk8
+  build:
     commands:
-      - mvn clean package
-      - aws cloudformation package --template-file template.yaml --s3-bucket magenta-server
-        --output-template-file outputSamTemplate.yaml
+      - sam package --template-file template.yml --s3-bucket magenta-server --output-template-file packaged-template.yml
 artifacts:
-  type: zip
   files:
-    - template.yaml
-    - outputSamTemplate.yaml
+    - packaged-template.yml
