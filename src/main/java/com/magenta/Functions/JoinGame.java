@@ -4,6 +4,7 @@ import com.amazonaws.serverless.proxy.internal.model.AwsProxyResponse;
 import com.amazonaws.services.apigatewaymanagementapi.AmazonApiGatewayManagementApi;
 import com.amazonaws.services.apigatewaymanagementapi.model.PostToConnectionRequest;
 import com.amazonaws.services.lambda.runtime.Context;
+import com.amazonaws.services.lambda.runtime.LambdaLogger;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayV2WebSocketEvent;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -23,6 +24,8 @@ public class JoinGame implements RequestHandler<APIGatewayV2WebSocketEvent, Obje
     private final Jedis jedis;
     private final AmazonApiGatewayManagementApi api;
     ObjectMapper objectMapper = new ObjectMapper();
+    LambdaLogger logger;
+
 
 
     public JoinGame() throws IOException {
@@ -46,10 +49,13 @@ public class JoinGame implements RequestHandler<APIGatewayV2WebSocketEvent, Obje
 
             Message response = new Message();
             response.setType("Joined Game");
-            response.setSubject(objectMapper.writeValueAsString(jedis.hgetAll(message.getDestination())));
+            response.setSubject(objectMapper.writeValueAsString(jedis.hgetAll("points:"+message.getDestination())));
+
+            LambdaLogger logger = context.getLogger();
+            logger.log("REDIS: "+jedis.hgetAll("points:"+message.getDestination()));
 
             PostToConnectionRequest post = new PostToConnectionRequest();
-            post.setData(ByteBuffer.wrap(objectMapper.writeValueAsString(message).getBytes()));
+            post.setData(ByteBuffer.wrap(objectMapper.writeValueAsString(response).getBytes()));
             post.setConnectionId(connectionID);
             api.postToConnection(post);
             broadcast(message.getDestination(), message.getSender(), connectionID);

@@ -8,7 +8,7 @@ Resources:
       Handler: com.magenta.Functions.Broadcast::handleRequest
       Timeout: 60
       MemorySize: 512
-      CodeUri: ./target/MagentaLambda-1.0-SNAPSHOT.jar
+      CodeUri: ./target/MagentaLambda.jar
   OnOpen:
     Type: AWS::Serverless::Function
     Properties:
@@ -17,7 +17,7 @@ Resources:
       Handler: com.magenta.Functions.OnOpen::handleRequest
       Timeout: 300
       MemorySize: 512
-      CodeUri: ./target/MagentaLambda-1.0-SNAPSHOT.jar
+      CodeUri: ./target/MagentaLambda.jar
   JoinGame:
     Type: AWS::Serverless::Function
     Properties:
@@ -25,7 +25,7 @@ Resources:
       Handler: com.magenta.Functions.JoinGame::handleRequest
       Timeout: 300
       MemorySize: 512
-      CodeUri: ./target/MagentaLambda-1.0-SNAPSHOT.jar
+      CodeUri: ./target/MagentaLambda.jar
       Policies:
         - AmazonElastiCacheFullAccess
         - AmazonAPIGatewayInvokeFullAccess
@@ -38,7 +38,7 @@ Resources:
       Handler: com.magenta.Functions.CreateGame::handleRequest
       Timeout: 300
       MemorySize: 512
-      CodeUri: ./target/MagentaLambda-1.0-SNAPSHOT.jar
+      CodeUri: ./target/MagentaLambda.jar
       Policies:
         - AmazonElastiCacheFullAccess
         - AmazonAPIGatewayInvokeFullAccess
@@ -51,7 +51,7 @@ Resources:
       Handler: com.magenta.Functions.JoinGame::handleRequest
       Timeout: 300
       MemorySize: 512
-      CodeUri: ./target/MagentaLambda-1.0-SNAPSHOT.jar
+      CodeUri: ./target/MagentaLambda.jar
       Policies:
         - AmazonElastiCacheFullAccess
         - AmazonAPIGatewayInvokeFullAccess

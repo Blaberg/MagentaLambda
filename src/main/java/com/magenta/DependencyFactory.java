@@ -48,9 +48,7 @@ public class DependencyFactory {
         BasicAWSCredentials awsCreds = new BasicAWSCredentials(System.getenv("AccessID"), System.getenv("AccessKey"));
         return AmazonApiGatewayManagementApiClientBuilder
                 .standard()
-                .withCredentials(new AWSStaticCredentialsProvider(awsCreds)).withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration("uyssdmmwll" +
-                        ".execute-api" +
-                        ".eu-north-1.amazonaws.com/test", "eu-north-1"))
+                .withCredentials(new AWSStaticCredentialsProvider(awsCreds)).withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration("2au27vmcn0.execute-api.eu-north-1.amazonaws.com/production", "eu-north-1"))
                 .build();
     }
 

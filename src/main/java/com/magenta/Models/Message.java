@@ -4,6 +4,7 @@ import lombok.Data;
 
 @Data
 public class Message {
+    private String action;
     private String type;
     private String subject;
     private String answer;
