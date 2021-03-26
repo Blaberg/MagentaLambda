@@ -11,7 +11,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.magenta.DependencyFactory;
 import com.magenta.Models.Message;
-import lombok.SneakyThrows;
 import redis.clients.jedis.Jedis;
 
 import java.io.IOException;

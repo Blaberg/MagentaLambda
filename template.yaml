@@ -9,6 +9,11 @@ Resources:
       Timeout: 60
       MemorySize: 512
       CodeUri: ./target/MagentaLambda.jar
+      Policies:
+        - AmazonElastiCacheFullAccess
+        - AmazonAPIGatewayInvokeFullAccess
+        - AWSLambdaBasicExecutionRole
+        - AWSLambdaVPCAccessExecutionRole
   OnOpen:
     Type: AWS::Serverless::Function
     Properties:
@@ -18,6 +23,11 @@ Resources:
       Timeout: 300
       MemorySize: 512
       CodeUri: ./target/MagentaLambda.jar
+      Policies:
+        - AmazonElastiCacheFullAccess
+        - AmazonAPIGatewayInvokeFullAccess
+        - AWSLambdaBasicExecutionRole
+        - AWSLambdaVPCAccessExecutionRole
   JoinGame:
     Type: AWS::Serverless::Function
     Properties:
