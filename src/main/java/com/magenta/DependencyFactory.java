@@ -37,7 +37,7 @@ public class DependencyFactory {
 
     public static Jedis jedis() throws IOException {
 
-        String configEndpoint = "meganta-redis.dngk3v.0001.eun1.cache.amazonaws.com";
+        String configEndpoint = "magenta-redis.dngk3v.ng.0001.eun1.cache.amazonaws.com";
         int clusterPort = 6379;
 
         return new Jedis(configEndpoint, clusterPort);
