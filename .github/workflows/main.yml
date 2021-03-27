@@ -19,6 +19,15 @@ jobs:
   build:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        stages:
+          - stage: 'dev'
+            AWS_SECRET_ACCESS_KEY: 'AWS_SECRET_ACCESS_KEY_DEV'
+            AWS_ACCESS_KEY_ID: 'AWS_ACCESS_KEY_ID_DEV'
+          - stage: 'prod'
+            AWS_SECRET_ACCESS_KEY: 'AWS_SECRET_ACCESS_KEY_PROD'
+            AWS_ACCESS_KEY_ID: 'AWS_ACCESS_KEY_ID_PROD'
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -30,5 +39,12 @@ jobs:
           java-version: 1.8
       - name: Build with Maven
         run: mvn --batch-mode --update-snapshots verify
-      - name: SAM Deploy Action
-        uses: r0zar/sam-deploy-action@v1.4
+      - name: Install VPC Plugin and Deploy
+        uses: serverless/github-action@v1.53.0
+        with:
+          args: -c "serverless plugin install --name serverless-vpc-discovery && serverless deploy --stage=${{ matrix.stages.stage }} --verbose"
+          entrypoint: /bin/bash
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets[matrix.stages.AWS_ACCESS_KEY_ID] }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets[matrix.stages.AWS_SECRET_ACCESS_KEY] }}
+          SLS_DEBUG: 1
