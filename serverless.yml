@@ -14,7 +14,7 @@
 service: magenta-server
 # app and org for use with dashboard.serverless.com
 app: magenta
-org: Blaberg
+org: blaberg
 
 # You can pin your service to only deploy with a specific Serverless version
 # Check out our docs for more details
@@ -26,15 +26,39 @@ provider:
   stage: dev
   region: eu-central-1
   websocketApiRouteSelectionExpression: $request.body.action
-
+  iam:
+    role:
+      statements:
+        - Effect: 'Allow'
+          Action:
+            - 'elasticache:*'
+            - 'execute-api:Invoke'
+            - 'execute-api:ManageConnections'
+          Resource: '*'
 
 package:
   artifact: target/MagentaLambda.jar
 
 functions:
   onOpen:
-    handler: com.serverless.Functions.OnOpen
+    handler: com.magenta.Functions.OnOpen
     events:
       - websocket:
           route: $connect
+  joinGame:
+    handler: com.magenta.Functions.JoinGame
+    events:
+      - websocket:
+          route: joinGame
+  createGame:
+    handler: com.magenta.Functions.CreateGame
+    events:
+      - websocket:
+          route: createGame
+  onDisconnect:
+    handler: com.magenta.Functions.CreateGame
+    events:
+      - websocket:
+          route: $disconnect
+
 
