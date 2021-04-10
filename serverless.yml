@@ -30,7 +30,7 @@ provider:
       statements:
         - Effect: 'Allow'
           Action:
-            - 'elasticache:*'
+            - 'dynamodb:*'
             - 'execute-api:Invoke'
             - 'execute-api:ManageConnections'
           Resource: '*'
@@ -60,4 +60,18 @@ functions:
       - websocket:
           route: $disconnect
 
-
+resources:
+  Resources:
+    productsTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: products_table
+        AttributeDefinitions:
+          - AttributeName: pin
+            AttributeType: N
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
