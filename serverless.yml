@@ -70,7 +70,7 @@ resources:
           - AttributeName: pin
             AttributeType: N
         KeySchema:
-          - AttributeName: id
+          - AttributeName: pin
             KeyType: HASH
         ProvisionedThroughput:
           ReadCapacityUnits: 1
