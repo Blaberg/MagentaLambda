@@ -13,7 +13,6 @@
 
 service: magenta-server
 # app and org for use with dashboard.serverless.com
-app: magenta
 org: blaberg
 
 # You can pin your service to only deploy with a specific Serverless version
