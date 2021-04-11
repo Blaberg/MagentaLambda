@@ -65,7 +65,7 @@ resources:
     productsTable:
       Type: AWS::DynamoDB::Table
       Properties:
-        TableName: products_table
+        TableName: games_table
         AttributeDefinitions:
           - AttributeName: pin
             AttributeType: N
