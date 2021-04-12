@@ -59,7 +59,7 @@ public class DependencyFactory {
                 "AccessKey").textValue());
         return AmazonApiGatewayManagementApiClientBuilder
                 .standard()
-                .withCredentials(new AWSStaticCredentialsProvider(awsCreds)).withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration("2au27vmcn0.execute-api.eu-north-1.amazonaws.com/production", "eu-north-1"))
+                .withCredentials(new AWSStaticCredentialsProvider(awsCreds)).withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration("s6mgqhqn53.execute-api.eu-central-1.amazonaws.com/dev", "eu-central-1"))
                 .build();
     }
 
