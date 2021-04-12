@@ -15,13 +15,13 @@ public class Game {
     private final AmazonDynamoDB client;
     private final DynamoDBMapper mapper;
 
-    @DynamoDBHashKey(attributeName = "Pin")
+    @DynamoDBHashKey(attributeName = "pin")
     private String pin;
 
-    @DynamoDBAttribute(attributeName = "Connections")
+    @DynamoDBAttribute(attributeName = "connections")
     private Set<String> connections;
 
-    @DynamoDBAttribute(attributeName = "Players")
+    @DynamoDBAttribute(attributeName = "players")
     private List<Player> players;
 
     public Game() {

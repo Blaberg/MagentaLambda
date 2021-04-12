@@ -17,10 +17,10 @@ public class Connection {
     private final AmazonDynamoDB client;
     private final DynamoDBMapper mapper;
 
-    @DynamoDBHashKey(attributeName = "Id")
+    @DynamoDBHashKey(attributeName = "id")
     private String id;
 
-    @DynamoDBAttribute(attributeName = "Game Pin")
+    @DynamoDBAttribute(attributeName = "gamePin")
     private String gamePin;
 
     public Connection() {
