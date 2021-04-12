@@ -1,7 +1,0 @@
-provider:
-  name: aws
-  stage: dev
-  websocketApiRouteSelectionExpression: $request.body.action
-
-plugins:
-  - serverless-websockets-plugin

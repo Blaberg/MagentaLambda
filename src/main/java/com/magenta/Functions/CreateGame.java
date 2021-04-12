@@ -11,6 +11,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.magenta.DependencyFactory;
 import com.magenta.Models.Message;
+import com.magenta.dal.Connection;
+import com.magenta.dal.Game;
+import com.magenta.dal.Player;
 import redis.clients.jedis.Jedis;
 
 import java.io.IOException;
@@ -22,7 +25,6 @@ import java.util.Map;
 
 public class CreateGame implements RequestHandler<APIGatewayV2WebSocketEvent, Object> {
 
-    private final Jedis jedis;
     private final AmazonApiGatewayManagementApi api;
     ObjectMapper objectMapper = new ObjectMapper();
 
@@ -31,24 +33,35 @@ public class CreateGame implements RequestHandler<APIGatewayV2WebSocketEvent, Ob
 
 
     public CreateGame() throws IOException {
-        jedis = DependencyFactory.jedis();
         api = DependencyFactory.api();
 
     }
 
     @Override
     public Object handleRequest(APIGatewayV2WebSocketEvent event, Context context) {
-        String pin = generatePin();
+        Game game = new Game();
+        String pin = generatePin(game);
         Message message = null;
         try {
             message = objectMapper.readValue(event.getBody(), Message.class);
         } catch (JsonProcessingException e) {
             logger.log(Arrays.toString(e.getStackTrace()));
         }
-        jedis.hset("points:"+pin, message.getSender(), "0");
-        jedis.sadd(pin, event.getRequestContext().getConnectionId());
+        //Set the Game Pin.
+        game.setPin(pin);
+        //Create and add the first player.
+        Player player = new Player(message.getSender(), 0);
+        game.getPlayers().add(player);
+        //Add the connection ID to the game
+        game.getConnections().add(event.getRequestContext().getConnectionId());
+        //Save the Game in the database
+        game.save(game);
 
-        jedis.hset("connections",event.getRequestContext().getConnectionId(),pin+":"+event.getBody());
+        //Create a Connection to keep track of the user.
+        Connection connection = new Connection();
+        connection.setGamePin(pin);
+        connection.setId(event.getRequestContext().getConnectionId());
+
 
         AwsProxyResponse awsProxyResponse = new AwsProxyResponse();
         awsProxyResponse.setStatusCode(200);
@@ -83,12 +96,12 @@ public class CreateGame implements RequestHandler<APIGatewayV2WebSocketEvent, Ob
      *
      * @return the string
      */
-    public String generatePin() {
+    public String generatePin(Game game) {
         SecureRandom random = new SecureRandom();
         int num = random.nextInt(1000000);
         String pin = String.format("%06d", num);
-        if (jedis.exists(pin)) {
-            pin = generatePin();
+        if (game.get(pin)!=null) {
+            pin = generatePin(game);
         }
         return pin;
 
