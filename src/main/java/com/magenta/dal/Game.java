@@ -5,6 +5,8 @@ import com.amazonaws.services.dynamodbv2.datamodeling.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
+import com.magenta.dal.Player;
+
 import java.util.*;
 
 @Data
@@ -57,7 +59,14 @@ public class Game {
         return true;
     }
 
+    public class Players {
 
+        @DynamoDBAttribute(attributeName = "Name")
+        private String name;
+
+        @DynamoDBAttribute(attributeName = "Points")
+        private int points;
+    }
 
 
 
