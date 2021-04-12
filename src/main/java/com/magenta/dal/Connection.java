@@ -9,7 +9,7 @@ import software.amazon.awssdk.services.s3.model.PutBucketAccelerateConfiguration
 import java.util.ArrayList;
 import java.util.HashSet;
 
-@Data
+
 @DynamoDBTable(tableName = "PLACEHOLDER_CONNECTIONS_TABLE_NAME")
 public class Connection {
     private static final String CONNECTIONS_TABLE_NAME = System.getenv("CONNECTION_TABLE_NAME");
@@ -17,11 +17,25 @@ public class Connection {
     private final AmazonDynamoDB client;
     private final DynamoDBMapper mapper;
 
-    @DynamoDBHashKey(attributeName = "id")
     private String id;
+    private String gamePin;
+
+
+    @DynamoDBHashKey(attributeName = "id")
+    public String getId(){
+        return id;
+    }
+    public void setId(String id){
+        this.id = id;
+    }
 
     @DynamoDBAttribute(attributeName = "gamePin")
-    private String gamePin;
+    public String getGamePin(){
+        return gamePin;
+    }
+    public void setGamePin(String gamePin){
+        this.gamePin = gamePin;
+    }
 
     public Connection() {
         // build the mapper config

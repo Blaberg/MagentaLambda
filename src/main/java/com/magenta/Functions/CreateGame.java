@@ -61,6 +61,8 @@ public class CreateGame implements RequestHandler<APIGatewayV2WebSocketEvent, Ob
         Connection connection = new Connection();
         connection.setGamePin(pin);
         connection.setId(event.getRequestContext().getConnectionId());
+        //save connection
+        connection.save(connection);
 
 
         AwsProxyResponse awsProxyResponse = new AwsProxyResponse();
@@ -72,6 +74,7 @@ public class CreateGame implements RequestHandler<APIGatewayV2WebSocketEvent, Ob
         Message response = new Message();
         response.setType("Game Created");
         response.setSubject(pin);
+        response.setSender(message.getSender());
         LambdaLogger logger = context.getLogger();
         logger.log(event.toString());
         logger.log("CONNECTION-ID: "+event.getRequestContext().getConnectionId());
