@@ -33,6 +33,7 @@ provider:
             - 'dynamodb:*'
             - 'execute-api:Invoke'
             - 'execute-api:ManageConnections'
+            - 'secretsmanager:GetSecretValue'
           Resource: '*'
 
 package:
