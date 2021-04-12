@@ -27,6 +27,7 @@ provider:
   websocketApiRouteSelectionExpression: $request.body.action
   environment:
     GAMES_TABLE_NAME: games_table
+    CONNECTIONS_TABLE_NAME: connections_table
 
   iam:
     role:
