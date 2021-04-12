@@ -11,6 +11,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.magenta.DependencyFactory;
 import lombok.SneakyThrows;
+import redis.clients.jedis.Connection;
 import redis.clients.jedis.Jedis;
 
 import java.io.IOException;
@@ -38,8 +39,6 @@ public class OnOpen implements RequestHandler<APIGatewayV2WebSocketEvent, Object
         Map<String, String> headers = new HashMap<>();
         headers.put("Content-Type", "application/json");
         response.setHeaders(headers);
-
-        jedis.sadd("Connections", event.getRequestContext().getConnectionId());
 
 
         return response;

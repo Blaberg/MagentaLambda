@@ -2,6 +2,7 @@ package com.magenta.dal;
 
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.datamodeling.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.util.*;
@@ -15,7 +16,7 @@ public class Game {
     private final DynamoDBMapper mapper;
 
     @DynamoDBHashKey(attributeName = "Pin")
-    private int pin;
+    private String pin;
 
     @DynamoDBAttribute(attributeName = "Connections")
     private Set<String> connections;
@@ -42,11 +43,11 @@ public class Game {
         this.mapper.save(game);
     }
 
-    public Game get(int id){
+    public Game get(String id){
         return this.mapper.load(Game.class, id);
     }
 
-    public Boolean delete(int id){
+    public Boolean delete(String id){
         Game game = get(id);
         if (game != null) {
             this.mapper.delete(game);
