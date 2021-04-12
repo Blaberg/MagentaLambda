@@ -25,6 +25,9 @@ provider:
   stage: dev
   region: eu-central-1
   websocketApiRouteSelectionExpression: $request.body.action
+  environment:
+    GAMES_TABLE_NAME: games_table
+
   iam:
     role:
       statements:
