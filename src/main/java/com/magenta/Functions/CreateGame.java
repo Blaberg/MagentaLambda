@@ -50,7 +50,7 @@ public class CreateGame implements RequestHandler<APIGatewayV2WebSocketEvent, Ob
         //Set the Game Pin.
         game.setPin(pin);
         //Create and add the first player.
-        Player player = new Player(message.getSender(), 0);
+        Game.Player player = new Game.Player(message.getSender(), 0);
         game.getPlayers().add(player);
         //Add the connection ID to the game
         game.getConnections().add(event.getRequestContext().getConnectionId());
