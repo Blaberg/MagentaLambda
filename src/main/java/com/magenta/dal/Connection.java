@@ -12,7 +12,7 @@ import java.util.HashSet;
 
 @DynamoDBTable(tableName = "PLACEHOLDER_CONNECTIONS_TABLE_NAME")
 public class Connection {
-    private static final String CONNECTIONS_TABLE_NAME = System.getenv("CONNECTION_TABLE_NAME");
+    private static final String CONNECTIONS_TABLE_NAME = System.getenv("CONNECTIONS_TABLE_NAME");
     private final DynamoDBAdapter db_adapter;
     private final AmazonDynamoDB client;
     private final DynamoDBMapper mapper;
