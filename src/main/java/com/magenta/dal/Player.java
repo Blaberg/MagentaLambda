@@ -7,12 +7,9 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-@DynamoDBDocument
 public class Player {
 
-    @DynamoDBAttribute(attributeName = "Name")
     private String name;
 
-    @DynamoDBAttribute(attributeName = "Points")
     private int points;
 }

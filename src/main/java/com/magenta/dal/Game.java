@@ -58,13 +58,13 @@ public class Game {
         }
         return true;
     }
-
+    @DynamoDBDocument
     public class Players {
 
-        @DynamoDBAttribute(attributeName = "Name")
+        @DynamoDBAttribute(attributeName = "name")
         private String name;
 
-        @DynamoDBAttribute(attributeName = "Points")
+        @DynamoDBAttribute(attributeName = "points")
         private int points;
     }
 
