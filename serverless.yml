@@ -25,6 +25,9 @@ provider:
   stage: dev
   region: eu-central-1
   websocketApiRouteSelectionExpression: $request.body.action
+  environment:
+    AccessID: ${file(../config.${opt:stage, 'dev'}.json):CREDS}
+    AceessKey
   iam:
     role:
       statements:
