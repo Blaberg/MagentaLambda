@@ -13,8 +13,6 @@ import com.magenta.DependencyFactory;
 import com.magenta.Models.Message;
 import com.magenta.dal.Connection;
 import com.magenta.dal.Game;
-import com.magenta.dal.Player;
-import redis.clients.jedis.Jedis;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -50,7 +48,9 @@ public class CreateGame implements RequestHandler<APIGatewayV2WebSocketEvent, Ob
         //Set the Game Pin.
         game.setPin(pin);
         //Create and add the first player.
-        Game.Player player = new Game.Player(message.getSender(), 0);
+        Game.Player player = new Game.Player();
+        player.setName(message.getSender());
+        player.setPoints(0);
         game.getPlayers().add(player);
         //Add the connection ID to the game
         game.getConnections().add(event.getRequestContext().getConnectionId());
