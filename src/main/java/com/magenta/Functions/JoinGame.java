@@ -95,7 +95,7 @@ public class JoinGame implements RequestHandler<APIGatewayV2WebSocketEvent, Obje
         post.setData(ByteBuffer.wrap(objectMapper.writeValueAsString(message).getBytes()));
         for (String connection : game.getConnections()) {
             if (!Objects.equals(connection, connectionID)) {
-                logger.log(String.valueOf(Objects.equals(connection, connectionID)));
+                //logger.log(String.valueOf(Objects.equals(connection, connectionID)));
                 try {
                     post.setConnectionId(connection);
                     api.postToConnection(post);
