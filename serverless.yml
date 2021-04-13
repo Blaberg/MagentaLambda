@@ -61,7 +61,7 @@ functions:
       - websocket:
           route: createGame
   onDisconnect:
-    handler: com.magenta.Functions.onDisconnect
+    handler: com.magenta.Functions.OnDisconnect
     events:
       - websocket:
           route: $disconnect

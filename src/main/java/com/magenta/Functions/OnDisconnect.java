@@ -27,6 +27,7 @@ public class OnDisconnect implements RequestHandler<APIGatewayV2WebSocketEvent, 
                 game.getPlayers().remove(player);
             }
         }
+        game.getConnections().remove(connection.getId());
         if(game.getConnections().size()>0){
             game.save(game);
         }else {
