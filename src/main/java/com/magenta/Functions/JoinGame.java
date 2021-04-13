@@ -61,7 +61,9 @@ public class JoinGame implements RequestHandler<APIGatewayV2WebSocketEvent, Obje
             post.setData(ByteBuffer.wrap(objectMapper.writeValueAsString(response).getBytes()));
             post.setConnectionId(connectionID);
             api.postToConnection(post);
-            broadcast(game, message.getSender(), connectionID);
+            if(!message.getSender().equals("Scoreboard")) {
+                broadcast(game, message.getSender(), connectionID);
+            }
         } catch (JsonProcessingException e) {
             e.printStackTrace();
             awsResponse.setStatusCode(400);
