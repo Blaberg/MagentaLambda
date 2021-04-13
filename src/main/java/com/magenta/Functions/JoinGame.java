@@ -94,8 +94,13 @@ public class JoinGame implements RequestHandler<APIGatewayV2WebSocketEvent, Obje
         post.setData(ByteBuffer.wrap(objectMapper.writeValueAsString(message).getBytes()));
         for (String connection : game.getConnections()) {
             if (!connection.equals(connectionID)) {
-                post.setConnectionId(connection);
-                api.postToConnection(post);
+                try {
+                    post.setConnectionId(connection);
+                    api.postToConnection(post);
+                }catch (Exception e){
+                    game.getConnections().remove(connection);
+                    game.save(game);
+                }
             }
         }
     }
