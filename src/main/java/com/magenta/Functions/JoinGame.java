@@ -81,11 +81,12 @@ public class JoinGame implements RequestHandler<APIGatewayV2WebSocketEvent, Obje
             player.setPoints(0);
             player.setId(connectionID);
             game.getPlayers().add(player);
-            Connection connection = new Connection();
-            connection.setId(connectionID);
-            connection.setGamePin(game.getPin());
-            connection.save(connection);
+
         }
+        Connection connection = new Connection();
+        connection.setId(connectionID);
+        connection.setGamePin(game.getPin());
+        connection.save(connection);
         game.save(game);
 
     }
