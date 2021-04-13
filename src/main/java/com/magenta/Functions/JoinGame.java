@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class JoinGame implements RequestHandler<APIGatewayV2WebSocketEvent, Object> {
 
@@ -93,7 +94,8 @@ public class JoinGame implements RequestHandler<APIGatewayV2WebSocketEvent, Obje
         message.setSender(player);
         post.setData(ByteBuffer.wrap(objectMapper.writeValueAsString(message).getBytes()));
         for (String connection : game.getConnections()) {
-            if (!connection.equals(connectionID)) {
+            if (!Objects.equals(connection, connectionID)) {
+                logger.log(String.valueOf(Objects.equals(connection, connectionID)));
                 try {
                     post.setConnectionId(connection);
                     api.postToConnection(post);
