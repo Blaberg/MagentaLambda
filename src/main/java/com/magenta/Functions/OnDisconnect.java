@@ -7,10 +7,10 @@ import com.amazonaws.services.lambda.runtime.events.APIGatewayV2WebSocketEvent;
 import com.magenta.DependencyFactory;
 import com.magenta.dal.Connection;
 import com.magenta.dal.Game;
-import redis.clients.jedis.Jedis;
 
-import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class OnDisconnect implements RequestHandler<APIGatewayV2WebSocketEvent, Object> {
@@ -22,11 +22,13 @@ public class OnDisconnect implements RequestHandler<APIGatewayV2WebSocketEvent, 
 
         Game game = new Game();
         game = game.get(connection.getGamePin());
+        List<Game.Player> removelist = new ArrayList<>();
         for(Game.Player player: game.getPlayers()){
             if(player.getId().equals(connection.getId())){
-                game.getPlayers().remove(player);
+                removelist.add(player);
             }
         }
+        game.getPlayers().removeAll(removelist);
         game.getConnections().remove(connection.getId());
         if(game.getConnections().size()>0){
             game.save(game);
