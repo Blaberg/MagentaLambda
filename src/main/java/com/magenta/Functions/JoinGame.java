@@ -10,8 +10,9 @@ import com.amazonaws.services.lambda.runtime.events.APIGatewayV2WebSocketEvent;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.magenta.DependencyFactory;
-import com.magenta.Models.Game;
 import com.magenta.Models.Message;
+import com.magenta.dal.Connection;
+import com.magenta.dal.Game;
 import redis.clients.jedis.Jedis;
 
 import java.io.IOException;
@@ -21,7 +22,6 @@ import java.util.Map;
 
 public class JoinGame implements RequestHandler<APIGatewayV2WebSocketEvent, Object> {
 
-    private final Jedis jedis;
     private final AmazonApiGatewayManagementApi api;
     ObjectMapper objectMapper = new ObjectMapper();
     LambdaLogger logger;
@@ -29,7 +29,6 @@ public class JoinGame implements RequestHandler<APIGatewayV2WebSocketEvent, Obje
 
 
     public JoinGame() throws IOException {
-        jedis = DependencyFactory.jedis();
         api = DependencyFactory.api();
     }
 
@@ -44,21 +43,24 @@ public class JoinGame implements RequestHandler<APIGatewayV2WebSocketEvent, Obje
         try {
             Message message = objectMapper.readValue(event.getBody(), Message.class);
             String connectionID = event.getRequestContext().getConnectionId();
-            joinGame(message.getDestination(), message.getSender(),
+            Game game = new Game();
+            game = game.get(message.getDestination());
+
+            joinGame(game, message.getSender(),
                     connectionID);
 
             Message response = new Message();
             response.setType("Joined Game");
-            response.setSubject(objectMapper.writeValueAsString(jedis.hgetAll("points:"+message.getDestination())));
+            response.setSubject(objectMapper.writeValueAsString(game.get(message.getDestination()).getPlayers()));
 
             LambdaLogger logger = context.getLogger();
-            logger.log("REDIS: "+jedis.hgetAll("points:"+message.getDestination()));
+            logger.log("DYNAMODB: "+game.get(message.getDestination()).getPlayers());
 
             PostToConnectionRequest post = new PostToConnectionRequest();
             post.setData(ByteBuffer.wrap(objectMapper.writeValueAsString(response).getBytes()));
             post.setConnectionId(connectionID);
             api.postToConnection(post);
-            broadcast(message.getDestination(), message.getSender(), connectionID);
+            broadcast(game, message.getSender(), connectionID);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
             awsResponse.setStatusCode(400);
@@ -68,22 +70,29 @@ public class JoinGame implements RequestHandler<APIGatewayV2WebSocketEvent, Obje
         return awsResponse;
     }
 
-    public void joinGame(String pin, String player, String connectionID) {
-        jedis.sadd(pin, connectionID);
-        if (!player.equals("Scoreboard")) {
-            jedis.hset("points:" + pin, player, "0");
+    public void joinGame(Game game, String name, String connectionID) {
+        game.getConnections().add(connectionID);
+        if (!name.equals("Scoreboard")) {
+            Game.Player player = new Game.Player();
+            player.setName(name);
+            player.setPoints(0);
+            game.getPlayers().add(player);
         }
-        jedis.hset("connections", connectionID, pin + ":" + player);
+        game.save(game);
+        Connection connection = new Connection();
+        connection.setId(connectionID);
+        connection.setGamePin(game.getPin());
+        connection.save(connection);
     }
 
-    public void broadcast(String pin, String player, String connectionID) throws JsonProcessingException {
+    public void broadcast(Game game, String player, String connectionID) throws JsonProcessingException {
         PostToConnectionRequest post = new PostToConnectionRequest();
         Message message = new Message();
         message.setType("Player Joined");
         message.setSubject("0");
         message.setSender(player);
         post.setData(ByteBuffer.wrap(objectMapper.writeValueAsString(message).getBytes()));
-        for (String connection : jedis.smembers(pin)) {
+        for (String connection : game.getConnections()) {
             if (!connection.equals(connectionID)) {
                 post.setConnectionId(connection);
                 api.postToConnection(post);
