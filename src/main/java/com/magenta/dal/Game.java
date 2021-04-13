@@ -2,8 +2,7 @@ package com.magenta.dal;
 
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.datamodeling.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
+
 
 import java.util.*;
 
@@ -43,6 +42,37 @@ public class Game {
         this.players = players;
     }
 
+
+    @DynamoDBDocument
+    public static class Player {
+        private String name;
+        private int points;
+        private String id;
+
+        @DynamoDBAttribute(attributeName = "name")
+        public String getName(){
+            return name;
+        }
+        public void setName(String name){
+            this.name = name;
+        }
+
+        @DynamoDBAttribute(attributeName = "points")
+        public int getPoints(){
+            return points;
+        }
+        public void setPoints(int points){
+            this.points = points;
+        }
+
+        @DynamoDBAttribute(attributeName = "id")
+        public String getId(){
+            return id;
+        }
+        public void setId(String id){
+            this.id = id;
+        }
+    }
     public Game() {
         // build the mapper config
         DynamoDBMapperConfig mapperConfig = DynamoDBMapperConfig.builder()
@@ -56,7 +86,6 @@ public class Game {
         this.connections = new HashSet<>();
         this.players = new ArrayList<>();
     }
-
 
     public void save(Game game){
         this.mapper.save(game);
@@ -75,28 +104,6 @@ public class Game {
         }
         return true;
     }
-    @DynamoDBDocument
-    public static class Player {
-        private String name;
-        private int points;
-
-        @DynamoDBAttribute(attributeName = "name")
-        public String getName(){
-            return name;
-        }
-        public void setName(String name){
-            this.name = name;
-        }
-
-        @DynamoDBAttribute(attributeName = "points")
-        public int getPoints(){
-            return points;
-        }
-        public void setPoints(int points){
-            this.points = points;
-        }
-    }
-
 
 
 }

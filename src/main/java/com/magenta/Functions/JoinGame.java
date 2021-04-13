@@ -77,6 +77,7 @@ public class JoinGame implements RequestHandler<APIGatewayV2WebSocketEvent, Obje
             Game.Player player = new Game.Player();
             player.setName(name);
             player.setPoints(0);
+            player.setId(connectionID);
             game.getPlayers().add(player);
         }
         game.save(game);

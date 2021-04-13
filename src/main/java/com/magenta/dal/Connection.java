@@ -57,5 +57,10 @@ public class Connection {
         return this.mapper.load(Connection.class, id);
     }
 
+    public void delete(String  id){
+        Connection connection = get(id);
+        this.mapper.delete(connection);
+    }
+
 
 }
