@@ -51,7 +51,7 @@ public class JoinGame implements RequestHandler<APIGatewayV2WebSocketEvent, Obje
                     connectionID);
 
             Message response = new Message();
-            response.setType("Joined Game");
+            response.setAction("Joined Game");
             response.setSubject(objectMapper.writeValueAsString(game.get(message.getDestination()).getPlayers()));
 
             LambdaLogger logger = context.getLogger();
@@ -94,7 +94,7 @@ public class JoinGame implements RequestHandler<APIGatewayV2WebSocketEvent, Obje
     public void broadcast(Game game, String player, String connectionID) throws JsonProcessingException {
         PostToConnectionRequest post = new PostToConnectionRequest();
         Message message = new Message();
-        message.setType("Player Joined");
+        message.setAction("Player Joined");
         message.setSubject("0");
         message.setSender(player);
         post.setData(ByteBuffer.wrap(objectMapper.writeValueAsString(message).getBytes()));

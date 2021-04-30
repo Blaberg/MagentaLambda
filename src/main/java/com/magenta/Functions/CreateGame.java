@@ -75,7 +75,7 @@ public class CreateGame implements RequestHandler<APIGatewayV2WebSocketEvent, Ob
         awsProxyResponse.setHeaders(headers);
 
         Message response = new Message();
-        response.setType("Game Created");
+        response.setAction("Game Created");
         response.setSubject(pin);
         response.setSender(message.getSender());
         LambdaLogger logger = context.getLogger();
